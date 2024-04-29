@@ -27,7 +27,7 @@ jobs:
       - name: Build or Test with Maven
         run: |
           if [ ${{ matrix.stage }} == 'build' ]; then
-            cd ./backend/srvApp
+            cd ./backend
             chmod +x ./mvnw
             ./mvnw clean package -X
           elif [ ${{ matrix.stage }} == 'test' ]; then
@@ -37,7 +37,7 @@ jobs:
           fi
         working-directory: |
           if [ ${{ matrix.stage }} == 'build' ]; then
-            ./backend/srvApp
+            ./backend
           elif [ ${{ matrix.stage }} == 'test' ]; then
             ./backend
           fi
