@@ -1,0 +1,25 @@
+stages:
+  - build
+  - test 
+
+# Spring Boot Maven Build and Test
+build_springboot:
+  stage: build
+  image: maven:3.8.4-openjdk-17
+  script:
+    - cd ./backend/srvApp
+    - chmod +x ./mvnw
+    - ./mvnw clean package -X
+  artifacts:
+    paths:
+      - ./backend/target/*.jar 
+
+test_springboot:
+  stage: test
+  image: maven:3.8.4-openjdk-17
+  script:
+    - cd ./backend
+    - chmod +x ./mvnw
+    - ./mvnw clean verify test -X 
+
+#Ajouter plus tard l'integration continue pour le frontend
