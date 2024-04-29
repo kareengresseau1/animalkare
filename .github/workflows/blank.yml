@@ -26,21 +26,16 @@ jobs:
 
       - name: Build or Test with Maven
         run: |
-          if [ ${{ matrix.stage }} == 'build' ]; then
+          if [ "${{ matrix.stage }}" == 'build' ]; then
             cd ./backend
             chmod +x ./mvnw
             ./mvnw clean package -X
-          elif [ ${{ matrix.stage }} == 'test' ]; then
+          elif [ "${{ matrix.stage }}" == 'test' ]; then
             cd ./backend
             chmod +x ./mvnw
             ./mvnw clean verify test -X
           fi
-        working-directory: |
-          if [ ${{ matrix.stage }} == 'build' ]; then
-            ./backend
-          elif [ ${{ matrix.stage }} == 'test' ]; then
-            ./backend
-          fi
+        working-directory: ./backend
 
       - name: Publish build artifact
         if: matrix.stage == 'build'
