@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        stage: [build, test]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+
+      - name: Build or Test with Maven
+        run: |
+          if [ ${{ matrix.stage }} == 'build' ]; then
+            cd ./backend/srvApp
+            chmod +x ./mvnw
+            ./mvnw clean package -X
+          elif [ ${{ matrix.stage }} == 'test' ]; then
+            cd ./backend
+            chmod +x ./mvnw
+            ./mvnw clean verify test -X
+          fi
+        working-directory: |
+          if [ ${{ matrix.stage }} == 'build' ]; then
+            ./backend/srvApp
+          elif [ ${{ matrix.stage }} == 'test' ]; then
+            ./backend
+          fi
+
+      - name: Publish build artifact
+        if: matrix.stage == 'build'
+        uses: actions/upload-artifact@v2
+        with:
+          name: backend-artifact
+          path: ./backend/target/*.jar
